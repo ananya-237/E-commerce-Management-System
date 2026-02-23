@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ShopX - Home</title>
+    <title>ShopEase - Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         *{
@@ -82,20 +82,36 @@
         /* SLIDER */
         .slider{
             position:relative;
-            height:300px;
+            height: 500px;
             overflow:hidden;
         }
 
         .slides{
             display:flex;
-            width:300%;
-            transition:0.5s;
+            width:400%;
+            transition:10s;
         }
 
         .slides img{
             width:100%;
-            height:300px;
+            height:500px;
             object-fit:cover;
+
+        .arrows{
+            position:absolute;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:40px;
+            color:white;
+            background:rgba(0,0,0,0.4);
+            padding:10px 15px;
+            cursor:pointer;
+            border-radius:50%;
+            user-select:none;
+        }
+
+        .left{ left:20px; }
+        .right{ right:20px; }
         }
 
         /* PRODUCTS */
@@ -164,7 +180,7 @@
 
 <!-- NAVBAR -->
 <nav>
-    <div class="logo">ShopX</div>
+    <div class="logo">ShopEase</div>
 
     <div class="menu">
 
@@ -190,10 +206,17 @@
 <!-- IMAGE SLIDER -->
 <div class="slider">
     <div class="slides" id="slideContainer">
-        <img src="https://source.unsplash.com/1200x300/?shopping" />
-        <img src="https://source.unsplash.com/1200x300/?fashion" />
-        <img src="https://source.unsplash.com/1200x300/?electronics" />
+        <img src="https://img.freepik.com/free-photo/photocomposition-horizontal-shopping-banner-with-woman-big-smartphone_23-2151201773.jpg" />
+        
+        <img src="https://blog.magezon.com/wp-content/uploads/2020/08/fashion-banner.png" />
+        
+        <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/d1fa2f93546277.5e67adbfa56c3.jpg" />
+
+         <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/09a675179788335.6535ea2d5e747.jpg" />
     </div>
+    <button style="position:absolute; top:50%; left:10px;" onclick="prevSlide()">&#10094;</button>
+    <button style="position:absolute; top:50%; right:10px;" onclick="nextSlide()">&#10095;</button>
+
 </div>
 
 <!-- PRODUCTS -->
@@ -204,16 +227,16 @@
 </div>
 
 <footer>
-    © 2026 ShopX | Help Center | Contact | About Us
+    © 2026 ShopEase | Help Center | Contact | About Us
 </footer>
 
 <script>
 
 let products = [
-    {name:"Smartphone", image:"https://source.unsplash.com/300x200/?phone"},
-    {name:"Laptop", image:"https://source.unsplash.com/300x200/?laptop"},
-    {name:"Shoes", image:"https://source.unsplash.com/300x200/?shoes"},
-    {name:"Makeup Kit", image:"https://source.unsplash.com/300x200/?cosmetics"},
+    {name:"Smartphone", image:"https://img.freepik.com/premium-photo/realistic-white-smartphone-design-with-three-cameras_1144471-2890.jpg?w=2000"},
+    {name:"Laptop", image:"https://images.gizbot.com/img/2023/05/xps13plus9320-1-1684843070.jpg"},
+    {name:"Shoes", image:"https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/2278ef28-bac0-4f92-ba11-ab1efd5e4586/custom-nike-dunk-high-by-you-shoes.png"},
+    {name:"Makeup Kit", image:"https://m.media-amazon.com/images/I/81W7D1O013S.jpg"},
 ];
 
 let cart = [];
@@ -249,14 +272,27 @@ function searchProduct(){
     loadProducts(filtered);
 }
 
-/* AUTO SLIDER */
+/* MANUAL SLIDER */
+
 let index = 0;
-setInterval(()=>{
+const slideContainer = document.getElementById("slideContainer");
+const totalSlides = slideContainer.children.length;
+
+function nextSlide() {
     index++;
-    if(index>2) index=0;
-    document.getElementById("slideContainer").style.transform = 
-        `translateX(-${index * 100}%)`;
-},3000);
+    if (index >= totalSlides) {
+        index = 0;
+    }
+    slideContainer.style.transform = `translateX(-${index * 100}%)`;
+}
+
+function prevSlide() {
+    index--;
+    if (index < 0) {
+        index = totalSlides - 1;
+    }
+    slideContainer.style.transform = `translateX(-${index * 100}%)`;
+}
 
 loadProducts();
 
