@@ -6,50 +6,11 @@
   <title>Admin — ShopFire</title>
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="css/admin.css"/>
-  <style>
-    .upload-zone {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 1.2rem;
-      text-align: center;
-      transition: border-color var(--transition);
-      cursor: pointer;
-    }
-    .upload-zone:hover { border-color: var(--accent); }
-    .upload-zone.drag-over { border-color: var(--accent); background: rgba(255,107,53,0.05); }
-
-    #img-preview {
-      display: none;
-      width: 100%; max-height: 180px; object-fit: cover;
-      border-radius: 8px; margin-bottom: .75rem;
-      border: 1px solid var(--border);
-    }
-
-    .btn-upload {
-      background: var(--surface2); color: var(--text);
-      border: 1px solid var(--border); border-radius: 8px;
-      padding: .5rem 1.2rem; font-size: .85rem; cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
-    }
-    .btn-upload:hover { border-color: var(--accent); background: rgba(255,107,53,0.08); }
-
-    .upload-hint { font-size: .72rem; color: var(--text-muted); margin-top: .5rem; }
-
-    #upload-progress-wrap { display: none; margin-top: .6rem; }
-    #upload-progress-track { background: var(--border); border-radius: 999px; height: 8px; overflow: hidden; }
-    #upload-progress-bar {
-      height: 100%; width: 0%; background: var(--accent);
-      border-radius: 999px; transition: width .2s ease;
-    }
-    .upload-pct { font-size: .75rem; color: var(--text-muted); margin-top: .3rem; }
-  </style>
 </head>
 <body>
 
 <nav class="navbar">
-  <a href="index.html" class="nav-logo">Shop<span>Fire</span>
-    <span style="font-size:.7rem;color:var(--text-muted);font-family:var(--font-body);margin-left:.3rem">Admin</span>
-  </a>
+  <a href="index.html" class="nav-logo">Shop<span>Fire</span> <span style="font-size:.7rem;color:var(--text-muted);font-family:var(--font-body)">Admin</span></a>
   <div class="nav-links">
     <a href="products.html">View Store</a>
   </div>
@@ -61,29 +22,24 @@
 
     <!-- Add / Edit Form -->
     <div class="admin-form-card">
-      <h3>Add New Product</h3>
-      <form id="product-form" autocomplete="off">
-
+      <h3 id="form-title">Add New Product</h3>
+      <form id="product-form">
         <div class="form-group">
           <label>Product Name</label>
           <input type="text" name="pName" placeholder="e.g. Wireless Headphones" required/>
         </div>
-
         <div class="form-group">
           <label>Description</label>
-          <textarea name="pDesc" placeholder="Describe the product..." required></textarea>
+          <textarea name="pDesc" placeholder="Describe the product…" required></textarea>
         </div>
-
         <div class="form-group">
-          <label>Price (Rs.)</label>
-          <input type="number" name="pPrice" placeholder="999" min="1" step="0.01" required/>
+          <label>Price (₹)</label>
+          <input type="number" name="pPrice" placeholder="999" min="1" required/>
         </div>
-
         <div class="form-group">
           <label>Stock</label>
           <input type="number" name="pStock" placeholder="50" min="0" required/>
         </div>
-
         <div class="form-group">
           <label>Category</label>
           <select name="pCategory" required>
@@ -95,24 +51,10 @@
             <option>Other</option>
           </select>
         </div>
-
-        <!-- Image Upload -->
         <div class="form-group">
-          <label>Product Image</label>
-          <div class="upload-zone" id="upload-zone">
-            <input type="file" id="pImageFile" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none"/>
-            <img id="img-preview" alt="Image preview"/>
-            <button type="button" class="btn-upload" id="btn-pick-image">Choose Image</button>
-            <p class="upload-hint">JPG, PNG, WEBP - max 5 MB. Click or drag and drop.</p>
-          </div>
-          <div id="upload-progress-wrap">
-            <div id="upload-progress-track">
-              <div id="upload-progress-bar"></div>
-            </div>
-            <p class="upload-pct" id="upload-pct-text">Uploading... 0%</p>
-          </div>
+          <label>Image URL</label>
+          <input type="url" name="pImage" placeholder="https://…/image.jpg"/>
         </div>
-
         <button type="submit" class="btn-primary btn-block">Add Product</button>
       </form>
     </div>
@@ -124,16 +66,11 @@
         <table>
           <thead>
             <tr>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Actions</th>
+              <th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th>
             </tr>
           </thead>
           <tbody id="products-tbody">
-            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem">Loading...</td></tr>
+            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -142,48 +79,8 @@
   </div>
 </div>
 
-<footer>2025 ShopFire Admin</footer>
+<footer>© 2025 ShopFire Admin</footer>
 
 <script type="module" src="js/admin.js"></script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const zone    = document.getElementById("upload-zone");
-    const input   = document.getElementById("pImageFile");
-    const pickBtn = document.getElementById("btn-pick-image");
-    const preview = document.getElementById("img-preview");
-
-    pickBtn.addEventListener("click", (e) => { e.stopPropagation(); input.click(); });
-    zone.addEventListener("click", () => input.click());
-
-    input.addEventListener("change", () => {
-      const file = input.files[0];
-      if (file) showPreview(file);
-    });
-
-    zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("drag-over"); });
-    zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
-    zone.addEventListener("drop", (e) => {
-      e.preventDefault();
-      zone.classList.remove("drag-over");
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith("image/")) {
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        input.files = dt.files;
-        showPreview(file);
-      }
-    });
-
-    function showPreview(file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        preview.src = ev.target.result;
-        preview.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-</script>
 </body>
 </html>
